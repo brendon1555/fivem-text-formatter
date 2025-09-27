@@ -228,4 +228,31 @@
     outline: 2px solid var(--ring);
     outline-offset: 2px;
   }
+  
+  /* Tour animations */
+  @keyframes highlightPulse {
+    0%, 100% {
+      border-color: rgba(59, 130, 246, 0.6);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    }
+    50% {
+      border-color: rgba(59, 130, 246, 1);
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+    }
+  }
+  
+  .tour-tooltip {
+    animation: tooltipSlideIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes tooltipSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }

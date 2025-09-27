@@ -1,12 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { ExampleText } from './types';
 import TextEditor from './components/TextEditor';
 import TextPreview from './components/TextPreview';
 import { ThemeToggle } from './components/ThemeToggle';
+import { TourOverlay } from './components/TourOverlay';
+import { useTour } from './contexts/TourContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { HelpCircle } from 'lucide-react';
 
 const EXAMPLE_TEXTS: ExampleText[] = [
   {
@@ -54,6 +57,23 @@ const EXAMPLE_TEXTS: ExampleText[] = [
 function App() {
   const [text, setText] = useState('Welcome to the ~b~FiveM~s~ Text Formatter!~n~~n~Try typing some ~r~colored~s~ ~g~text~s~ with ~h~formatting~h~ codes.');
   const [selectedExample, setSelectedExample] = useState('');
+  const { startTour } = useTour();
+
+  // Check if user is first-time and start tour
+  useEffect(() => {
+    const tourCompleted = localStorage.getItem('fivem-formatter-tour-completed');
+    const hasVisited = localStorage.getItem('fivem-formatter-visited');
+    
+    if (!hasVisited) {
+      localStorage.setItem('fivem-formatter-visited', 'true');
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        if (!tourCompleted) {
+          startTour();
+        }
+      }, 500);
+    }
+  }, [startTour]);
 
   const handleTextChange = useCallback((newText: string) => {
     setText(newText);
@@ -85,7 +105,20 @@ function App() {
             <h1 className="text-xl sm:text-2xl font-semibold text-foreground">FiveM Text Formatter</h1>
             <p className="text-muted-foreground text-xs sm:text-sm mt-1">Real-time editor and preview for FiveM text formatting codes</p>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={startTour}
+              className="w-9 h-9 rounded-lg"
+              title="Take a guided tour"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+            <div data-tour="theme-toggle">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
       </header>
       
@@ -95,26 +128,28 @@ function App() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
               <CardTitle className="text-base sm:text-lg">Editor</CardTitle>
               <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
-                <Select value={selectedExample} onValueChange={(value) => {
-                  if (value) {
-                    const example = EXAMPLE_TEXTS.find(ex => ex.name === value);
-                    if (example) {
-                      loadExample(example.text);
+                <div data-tour="examples">
+                  <Select value={selectedExample} onValueChange={(value) => {
+                    if (value) {
+                      const example = EXAMPLE_TEXTS.find(ex => ex.name === value);
+                      if (example) {
+                        loadExample(example.text);
+                      }
                     }
-                  }
-                }}>
-                  <SelectTrigger className="w-full sm:w-40 text-xs sm:text-sm">
-                    <SelectValue placeholder="Load Example..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {EXAMPLE_TEXTS.map(example => (
-                      <SelectItem key={example.name} value={example.name}>
-                        {example.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <div className="flex gap-2">
+                  }}>
+                    <SelectTrigger className="w-full sm:w-40 text-xs sm:text-sm">
+                      <SelectValue placeholder="Load Example..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {EXAMPLE_TEXTS.map(example => (
+                        <SelectItem key={example.name} value={example.name}>
+                          {example.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex gap-2" data-tour="actions">
                   <Button 
                     variant="outline" 
                     size="sm"
@@ -137,7 +172,7 @@ function App() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="flex-1 min-h-0">
+          <CardContent className="flex-1 min-h-0" data-tour="text-editor">
             <TextEditor value={text} onChange={handleTextChange} />
           </CardContent>
         </Card>
@@ -146,8 +181,10 @@ function App() {
           <CardHeader className="pb-2 sm:pb-4">
             <CardTitle className="text-base sm:text-lg">Preview</CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 min-h-0 flex flex-col">
-            <TextPreview text={text} />
+          <CardContent className="flex-1 min-h-0 flex flex-col" data-tour="preview">
+            <div data-tour="quick-reference">
+              <TextPreview text={text} />
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -162,11 +199,14 @@ function App() {
             target="_blank" 
             rel="noopener noreferrer"
             className="text-primary hover:text-primary/80 transition-colors sm:ml-1"
+            data-tour="documentation"
           >
             View Official Documentation
           </a>
         </p>
       </footer>
+      
+      <TourOverlay />
     </div>
   );
 }

@@ -167,14 +167,15 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, onChange }) => {
 
   return (
     <div className="flex flex-col h-full gap-2 sm:gap-4">
-      <Tabs value={showAllButtons ? 'all' : activeCategory} onValueChange={(value) => {
-        if (value === 'all') {
-          setShowAllButtons(true);
-        } else {
-          setShowAllButtons(false);
-          setActiveCategory(value as CategoryType);
-        }
-      }}>
+      <div data-tour="formatting-buttons">
+        <Tabs value={showAllButtons ? 'all' : activeCategory} onValueChange={(value) => {
+          if (value === 'all') {
+            setShowAllButtons(true);
+          } else {
+            setShowAllButtons(false);
+            setActiveCategory(value as CategoryType);
+          }
+        }}>
         <TabsList className="grid grid-cols-4 sm:grid-cols-8 w-full h-auto p-1">
           {categories.map(category => (
             <TabsTrigger 
@@ -248,6 +249,7 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, onChange }) => {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
       
       <div className="relative flex-1">
         <Textarea

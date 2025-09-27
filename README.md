@@ -112,13 +112,6 @@ src/
 
 ## 🎯 Key Features Explained
 
-### TypeScript Integration
-The application is fully written in TypeScript, providing:
-- **Type Safety**: Compile-time error checking and better IDE support
-- **IntelliSense**: Enhanced autocompletion and documentation
-- **Refactoring Support**: Safe code changes across the entire codebase
-- **Interface Definitions**: Clear contracts for all components and utilities
-
 ### Smart Text Parser
 The application includes a sophisticated parser that:
 - Handles nested formatting codes
@@ -138,12 +131,6 @@ The application includes a sophisticated parser that:
 - Proper line break handling
 - Input control visualization
 
-## 🌐 Browser Support
-
-- Chrome/Edge 90+
-- Firefox 88+
-- Safari 14+
-- Mobile browsers with ES2020 support
 
 ## 📝 Contributing
 

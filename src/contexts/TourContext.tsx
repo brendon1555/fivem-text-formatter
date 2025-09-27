@@ -6,7 +6,7 @@ const TOUR_STEPS: TourStep[] = [
     id: 'welcome',
     title: 'Welcome to FiveM Text Formatter! 🎮',
     content: 'This tool helps you create and preview formatted text for FiveM/GTA V. Let\'s take a quick tour to get you started!',
-    target: 'header',
+    target: 'body',
     placement: 'bottom'
   },
   {

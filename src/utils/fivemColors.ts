@@ -6,28 +6,56 @@ import type {
   FormattingShortcut 
 } from '../types';
 
-// FiveM Color Mapping based on GTA V HUD Colors
+// FiveM Color Mapping based on GTA V HUD Colors - Enhanced for theme compatibility
 export const FIVEM_COLORS: ColorMapping = {
   // Basic colors
-  'r': '#e03232',     // HUD_COLOUR_RED - Red for enemies
-  'g': '#72cc72',     // HUD_COLOUR_GREEN - Green for pickups/objectives
-  'b': '#5db6e5',     // HUD_COLOUR_BLUE - Blue for friendly
-  'y': '#f0c850',     // HUD_COLOUR_YELLOW - Yellow for destinations
+  'r': '#e74c3c',     // HUD_COLOUR_RED - Red for enemies (enhanced contrast)
+  'g': '#27ae60',     // HUD_COLOUR_GREEN - Green for pickups/objectives
+  'b': '#3498db',     // HUD_COLOUR_BLUE - Blue for friendly
+  'y': '#f39c12',     // HUD_COLOUR_YELLOW - Yellow for destinations (better contrast)
   'w': '#ffffff',     // HUD_COLOUR_WHITE - White/default
   's': '#ffffff',     // Reset to default color
   
   // Extended colors
-  'o': '#ff8555',     // HUD_COLOUR_ORANGE - Orange team color
-  'p': '#8466e2',     // HUD_COLOUR_PURPLE - Purple team color
-  'q': '#cb3694',     // HUD_COLOUR_PINK - Pink for Arena War
-  'f': '#5db6e5',     // HUD_COLOUR_FRIENDLY - Alternate friendly color
-  'c': '#8c8c8c',     // HUD_COLOUR_MENU_GREY - De-emphasized text
+  'o': '#e67e22',     // HUD_COLOUR_ORANGE - Orange team color
+  'p': '#9b59b6',     // HUD_COLOUR_PURPLE - Purple team color
+  'q': '#e91e63',     // HUD_COLOUR_PINK - Pink for Arena War
+  'f': '#2ecc71',     // HUD_COLOUR_FRIENDLY - Alternate friendly color
+  'c': '#95a5a6',     // HUD_COLOUR_MENU_GREY - De-emphasized text
   't': '#95a5a6',     // HUD_COLOUR_MENU_GREY - Foreign language text
-  'm': '#646464',     // HUD_COLOUR_MID_GREY_MP - Medium gray
-  'l': '#000000',     // HUD_COLOUR_BLACK - Black
-  'd': '#2f5c73',     // HUD_COLOUR_BLUEDARK - Dark blue for team objectives
-  'u': '#000000',     // HUD_COLOUR_SCRIPT_VARIABLE_2 - Script variable 2
-  'v': '#000000',     // HUD_COLOUR_SCRIPT_VARIABLE - Script variable
+  'm': '#7f8c8d',     // HUD_COLOUR_MID_GREY_MP - Medium gray
+  'l': '#2c3e50',     // HUD_COLOUR_BLACK - Black (adjusted for visibility)
+  'd': '#2980b9',     // HUD_COLOUR_BLUEDARK - Dark blue for team objectives
+  'u': '#16a085',     // HUD_COLOUR_SCRIPT_VARIABLE_2 - Script variable 2
+  'v': '#8e44ad',     // HUD_COLOUR_SCRIPT_VARIABLE - Script variable
+};
+
+// Theme-aware color adjustments for better visibility
+export const getThemeAwareColor = (colorCode: string, isDark: boolean = true): string => {
+  const baseColor = FIVEM_COLORS[colorCode];
+  if (!baseColor) return '#ffffff';
+  
+  // Special handling for certain colors based on theme
+  if (!isDark) { // Light theme adjustments
+    switch (colorCode) {
+      case 'w':
+      case 's':
+        return '#2c3e50'; // Use dark text on light background
+      case 'l':
+        return '#2c3e50'; // Keep black readable
+      case 'y':
+        return '#d68910'; // Darken yellow for better contrast
+      case 'c':
+      case 't':
+      case 'm':
+        return '#7f8c8d'; // Adjust greys for light theme
+      default:
+        return baseColor;
+    }
+  }
+  
+  // Dark theme (keep original colors, they work well on dark backgrounds)
+  return baseColor;
 };
 
 // Visual formatting codes

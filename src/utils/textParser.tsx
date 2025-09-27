@@ -7,11 +7,12 @@ import {
   HUD_COLORS, 
   INPUT_MAPPINGS, 
   PAD_MAPPINGS,
-  FORMATTING_SHORTCUTS
+  FORMATTING_SHORTCUTS,
+  getThemeAwareColor
 } from './fivemColors';
 
 // Parse FiveM text and return React elements
-export function parseFiveMText(text: string): React.ReactElement[] {
+export function parseFiveMText(text: string, isDarkTheme: boolean = true): React.ReactElement[] {
   if (!text) return [];
   
   const elements: React.ReactElement[] = [];
@@ -39,7 +40,7 @@ export function parseFiveMText(text: string): React.ReactElement[] {
     }
     
     // Process the format code
-    const result = processFormatCode(formatCode, currentColor, isBold, isItalic, formatStack);
+    const result = processFormatCode(formatCode, currentColor, isBold, isItalic, formatStack, isDarkTheme);
     
     if (result.element) {
       elements.push(result.element);
@@ -101,7 +102,8 @@ function processFormatCode(
   currentColor: string, 
   isBold: boolean, 
   isItalic: boolean, 
-  _formatStack: string[]
+  _formatStack: string[],
+  isDarkTheme: boolean = true
 ): ParseResult {
   const result: ParseResult = {
     color: currentColor,
@@ -111,7 +113,7 @@ function processFormatCode(
   
   // Handle basic color codes
   if (FIVEM_COLORS[code]) {
-    result.color = FIVEM_COLORS[code];
+    result.color = getThemeAwareColor(code, isDarkTheme);
     return result;
   }
   

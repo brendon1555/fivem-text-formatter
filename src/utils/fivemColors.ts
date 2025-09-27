@@ -9,25 +9,25 @@ import type {
 // FiveM Color Mapping based on GTA V HUD Colors
 export const FIVEM_COLORS: ColorMapping = {
   // Basic colors
-  'r': '#e74c3c',     // HUD_COLOUR_RED - Red for enemies
-  'g': '#2ecc71',     // HUD_COLOUR_GREEN - Green for pickups/objectives
-  'b': '#3498db',     // HUD_COLOUR_BLUE - Blue for friendly
-  'y': '#f1c40f',     // HUD_COLOUR_YELLOW - Yellow for destinations
+  'r': '#e03232',     // HUD_COLOUR_RED - Red for enemies
+  'g': '#72cc72',     // HUD_COLOUR_GREEN - Green for pickups/objectives
+  'b': '#5db6e5',     // HUD_COLOUR_BLUE - Blue for friendly
+  'y': '#f0c850',     // HUD_COLOUR_YELLOW - Yellow for destinations
   'w': '#ffffff',     // HUD_COLOUR_WHITE - White/default
   's': '#ffffff',     // Reset to default color
   
   // Extended colors
-  'o': '#e67e22',     // HUD_COLOUR_ORANGE - Orange team color
-  'p': '#9b59b6',     // HUD_COLOUR_PURPLE - Purple team color
-  'q': '#e91e63',     // HUD_COLOUR_PINK - Pink for Arena War
-  'f': '#27ae60',     // HUD_COLOUR_FRIENDLY - Alternate friendly color
-  'c': '#95a5a6',     // HUD_COLOUR_MENU_GREY - De-emphasized text
+  'o': '#ff8555',     // HUD_COLOUR_ORANGE - Orange team color
+  'p': '#8466e2',     // HUD_COLOUR_PURPLE - Purple team color
+  'q': '#cb3694',     // HUD_COLOUR_PINK - Pink for Arena War
+  'f': '#5db6e5',     // HUD_COLOUR_FRIENDLY - Alternate friendly color
+  'c': '#8c8c8c',     // HUD_COLOUR_MENU_GREY - De-emphasized text
   't': '#95a5a6',     // HUD_COLOUR_MENU_GREY - Foreign language text
-  'm': '#7f8c8d',     // HUD_COLOUR_MID_GREY_MP - Medium gray
-  'l': '#2c3e50',     // HUD_COLOUR_BLACK - Black
-  'd': '#2980b9',     // HUD_COLOUR_BLUEDARK - Dark blue for team objectives
-  'u': '#8e44ad',     // HUD_COLOUR_SCRIPT_VARIABLE_2 - Script variable 2
-  'v': '#16a085',     // HUD_COLOUR_SCRIPT_VARIABLE - Script variable
+  'm': '#646464',     // HUD_COLOUR_MID_GREY_MP - Medium gray
+  'l': '#000000',     // HUD_COLOUR_BLACK - Black
+  'd': '#2f5c73',     // HUD_COLOUR_BLUEDARK - Dark blue for team objectives
+  'u': '#000000',     // HUD_COLOUR_SCRIPT_VARIABLE_2 - Script variable 2
+  'v': '#000000',     // HUD_COLOUR_SCRIPT_VARIABLE - Script variable
 };
 
 // Visual formatting codes

@@ -1,6 +1,27 @@
 import React, { useState, useRef, useCallback } from 'react';
 import type { TextEditorProps, FormattingShortcut, CategoryType } from '../types';
-import { FORMATTING_SHORTCUTS } from '../utils/fivemColors';
+import { FORMATTING_SHORTCUTS, FIVEM_COLORS } from '../utils/fivemColors';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+
+// Helper function to get button color styling
+const getButtonColorStyle = (shortcut: FormattingShortcut) => {
+  // Check if this is a color shortcut by looking at the code
+  const colorCode = shortcut.code.replace(/[~]/g, ''); // Remove ~ characters
+  const color = FIVEM_COLORS[colorCode];
+  
+  if (color && shortcut.category === 'colors') {
+    return {
+      backgroundColor: color,
+      borderColor: color,
+      color: color === '#ffffff' || color === '#f1c40f' ? '#000000' : '#ffffff',
+    };
+  }
+  
+  return {};
+};
 
 const TextEditor: React.FC<TextEditorProps> = ({ value, onChange }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -145,72 +166,92 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, onChange }) => {
   };
 
   return (
-    <div className="editor-container">
-      <div className="toolbar-container">
-        <div className="toolbar-header">
-          <div className="toolbar-categories">
-            {categories.map(category => (
-              <button
-                key={category}
-                className={`category-button ${activeCategory === category ? 'active' : ''}`}
-                onClick={() => setActiveCategory(category)}
-                title={`Show ${categoryLabels[category]} formatting options`}
-              >
-                {categoryLabels[category]}
-              </button>
-            ))}
-            <button
-              className={`category-button ${showAllButtons ? 'active' : ''}`}
-              onClick={() => setShowAllButtons(!showAllButtons)}
-              title="Toggle all categories"
+    <div className="flex flex-col h-full gap-2 sm:gap-4">
+      <Tabs value={showAllButtons ? 'all' : activeCategory} onValueChange={(value) => {
+        if (value === 'all') {
+          setShowAllButtons(true);
+        } else {
+          setShowAllButtons(false);
+          setActiveCategory(value as CategoryType);
+        }
+      }}>
+        <TabsList className="grid grid-cols-4 sm:grid-cols-8 w-full h-auto p-1">
+          {categories.map(category => (
+            <TabsTrigger 
+              key={category} 
+              value={category} 
+              className="text-[10px] sm:text-xs px-1 sm:px-3 py-1 sm:py-2 h-auto"
             >
-              {showAllButtons ? 'Collapse' : 'All'}
-            </button>
-          </div>
-        </div>
+              <span className="hidden sm:inline">{categoryLabels[category]}</span>
+              <span className="sm:hidden">
+                {category === 'colors' ? 'Color' :
+                 category === 'formatting' ? 'Format' :
+                 category === 'special' ? 'Special' :
+                 category === 'inputs' ? 'Keys' :
+                 category === 'gamepad' ? 'Pad' :
+                 category === 'placeholders' ? 'Place' :
+                 category === 'hud' ? 'HUD' : category}
+              </span>
+            </TabsTrigger>
+          ))}
+          <TabsTrigger value="all" className="text-[10px] sm:text-xs px-1 sm:px-3 py-1 sm:py-2 h-auto">
+            All
+          </TabsTrigger>
+        </TabsList>
         
-        <div className="toolbar-buttons">
-          {showAllButtons ? (
-            // Show all categories
-            categories.map(category => (
-              <div key={category} className="toolbar-section">
-                <div className="section-label">{categoryLabels[category]}</div>
-                <div className="toolbar">
+        {categories.map(category => (
+          <TabsContent key={category} value={category} className="mt-2 sm:mt-4">
+            <div className="flex flex-wrap gap-1 sm:gap-2">
+              {groupedShortcuts[category]?.map((shortcut) => (
+                <Button
+                  key={shortcut.code}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => insertFormatCode(shortcut.code)}
+                  title={shortcut.description}
+                  className="text-[10px] sm:text-xs h-6 sm:h-8 px-2 sm:px-3"
+                  style={getButtonColorStyle(shortcut)}
+                >
+                  {shortcut.label}
+                </Button>
+              ))}
+            </div>
+          </TabsContent>
+        ))}
+        
+        <TabsContent value="all" className="mt-2 sm:mt-4">
+          <div className="space-y-2 sm:space-y-4 max-h-32 sm:max-h-48 overflow-y-auto">
+            {categories.map(category => (
+              <div key={category}>
+                <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                  <Badge variant="secondary" className="text-[10px] sm:text-xs px-1 sm:px-2">
+                    {categoryLabels[category]}
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap gap-1 sm:gap-2">
                   {groupedShortcuts[category].map((shortcut) => (
-                    <button
+                    <Button
                       key={shortcut.code}
-                      className="toolbar-button"
+                      variant="outline"
+                      size="sm"
                       onClick={() => insertFormatCode(shortcut.code)}
                       title={shortcut.description}
+                      className="text-[10px] sm:text-xs h-6 sm:h-8 px-2 sm:px-3"
+                      style={getButtonColorStyle(shortcut)}
                     >
                       {shortcut.label}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
-            ))
-          ) : (
-            // Show only active category
-            <div className="toolbar">
-              {groupedShortcuts[activeCategory]?.map((shortcut) => (
-                <button
-                  key={shortcut.code}
-                  className="toolbar-button"
-                  onClick={() => insertFormatCode(shortcut.code)}
-                  title={shortcut.description}
-                >
-                  {shortcut.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
       
-        <div className="editor-wrapper" style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <textarea
+      <div className="relative flex-1">
+        <Textarea
           ref={textareaRef}
-          className="editor-textarea"
           value={value}
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
@@ -224,54 +265,31 @@ Press ~INPUT_CONTEXT~ to interact
 
 Use toolbar buttons or type ~ to see format codes!"
           spellCheck={false}
-        />        {showSuggestions && suggestions.length > 0 && (
-          <div 
-            className="suggestions-dropdown"
-            style={{
-              position: 'absolute',
-              top: '100%',
-              left: '10px',
-              right: '10px',
-              backgroundColor: 'var(--bg-tertiary)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '4px',
-              maxHeight: '200px',
-              overflowY: 'auto',
-              zIndex: 1000,
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)'
-            }}
-          >
+          className="font-mono text-xs sm:text-sm resize-none h-full min-h-[200px] sm:min-h-[300px]"
+        />
+        
+        {showSuggestions && suggestions.length > 0 && (
+          <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800 border border-slate-600 rounded-md max-h-32 sm:max-h-48 overflow-y-auto z-50 shadow-lg">
             {suggestions.map((suggestion, index) => (
               <div
                 key={index}
-                className="suggestion-item"
-                style={{
-                  padding: '8px 12px',
-                  cursor: 'pointer',
-                  borderBottom: index < suggestions.length - 1 ? '1px solid var(--border-color)' : 'none'
-                }}
+                className="p-2 sm:p-3 cursor-pointer hover:bg-slate-700 border-b border-slate-600 last:border-b-0"
                 onClick={() => {
                   insertFormatCode(suggestion.code);
                   setShowSuggestions(false);
                 }}
               >
-                <strong>{suggestion.code}</strong>
-                <br />
-                <small style={{ color: 'var(--text-secondary)' }}>
+                <div className="font-mono font-semibold text-xs sm:text-sm">
+                  {suggestion.code}
+                </div>
+                <div className="text-[10px] sm:text-xs text-slate-400 mt-1">
                   {suggestion.description}
-                </small>
+                </div>
               </div>
             ))}
-            <div 
-              style={{
-                padding: '4px 12px',
-                fontSize: '0.8em',
-                color: 'var(--text-secondary)',
-                borderTop: '1px solid var(--border-color)',
-                backgroundColor: 'var(--bg-secondary)'
-              }}
-            >
-              Press Tab to use first suggestion, Esc to close
+            <div className="px-2 sm:px-3 py-1 sm:py-2 text-[10px] sm:text-xs text-slate-400 bg-slate-900 border-t border-slate-600">
+              <span className="hidden sm:inline">Press Tab to use first suggestion, Esc to close</span>
+              <span className="sm:hidden">Tab: use, Esc: close</span>
             </div>
           </div>
         )}

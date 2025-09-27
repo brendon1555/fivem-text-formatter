@@ -2,6 +2,10 @@ import React, { useState, useCallback } from 'react';
 import type { ExampleText } from './types';
 import TextEditor from './components/TextEditor';
 import TextPreview from './components/TextPreview';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
 
 const EXAMPLE_TEXTS: ExampleText[] = [
   {
@@ -73,87 +77,85 @@ function App() {
   }, []);
 
   return (
-    <div className="app">
-      <header className="header">
-        <h1>FiveM Text Formatter</h1>
-        <p>Real-time editor and preview for FiveM text formatting codes</p>
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-50">
+      <header className="bg-slate-900 border-b border-slate-800 p-4 sm:p-6">
+        <h1 className="text-xl sm:text-2xl font-semibold text-slate-50">FiveM Text Formatter</h1>
+        <p className="text-slate-400 text-xs sm:text-sm mt-1">Real-time editor and preview for FiveM text formatting codes</p>
       </header>
       
-      <div className="main-content">
-        <div className="editor-section">
-          <div className="section-header">
-            <span>Editor</span>
-            <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <select
-                value={selectedExample}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    const example = EXAMPLE_TEXTS.find(ex => ex.name === e.target.value);
+      <div className="flex-1 flex flex-col lg:flex-row min-h-0 p-2 sm:p-4 gap-2 sm:gap-4">
+        <Card className="flex-1 flex flex-col min-h-[50vh] lg:min-h-0">
+          <CardHeader className="pb-2 sm:pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+              <CardTitle className="text-base sm:text-lg">Editor</CardTitle>
+              <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                <Select value={selectedExample} onValueChange={(value) => {
+                  if (value) {
+                    const example = EXAMPLE_TEXTS.find(ex => ex.name === value);
                     if (example) {
                       loadExample(example.text);
                     }
                   }
-                }}
-                style={{
-                  backgroundColor: 'var(--bg-secondary)',
-                  border: '1px solid var(--border-color)',
-                  color: 'var(--text-primary)',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.8rem'
-                }}
-              >
-                <option value="">Load Example...</option>
-                {EXAMPLE_TEXTS.map(example => (
-                  <option key={example.name} value={example.name}>
-                    {example.name}
-                  </option>
-                ))}
-              </select>
-              <button 
-                className="toolbar-button"
-                onClick={copyToClipboard}
-                title="Copy text to clipboard"
-                style={{ fontSize: '0.8rem', padding: '4px 8px' }}
-              >
-                Copy
-              </button>
-              <button 
-                className="toolbar-button"
-                onClick={clearText}
-                title="Clear all text"
-                style={{ fontSize: '0.8rem', padding: '4px 8px' }}
-              >
-                Clear
-              </button>
+                }}>
+                  <SelectTrigger className="w-full sm:w-40 text-xs sm:text-sm">
+                    <SelectValue placeholder="Load Example..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EXAMPLE_TEXTS.map(example => (
+                      <SelectItem key={example.name} value={example.name}>
+                        {example.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={copyToClipboard}
+                    title="Copy text to clipboard"
+                    className="flex-1 sm:flex-none text-xs sm:text-sm"
+                  >
+                    Copy
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={clearText}
+                    title="Clear all text"
+                    className="flex-1 sm:flex-none text-xs sm:text-sm"
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-          <TextEditor value={text} onChange={handleTextChange} />
-        </div>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-0">
+            <TextEditor value={text} onChange={handleTextChange} />
+          </CardContent>
+        </Card>
         
-        <div className="preview-section">
-          <div className="section-header">
-            Preview
-          </div>
-          <TextPreview text={text} />
-        </div>
+        <Card className="flex-1 flex flex-col min-h-[50vh] lg:min-h-0">
+          <CardHeader className="pb-2 sm:pb-4">
+            <CardTitle className="text-base sm:text-lg">Preview</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 min-h-0 flex flex-col">
+            <TextPreview text={text} />
+          </CardContent>
+        </Card>
       </div>
       
-      <footer style={{ 
-        padding: '1rem 2rem', 
-        backgroundColor: 'var(--bg-secondary)', 
-        borderTop: '1px solid var(--border-color)',
-        textAlign: 'center',
-        fontSize: '0.9rem',
-        color: 'var(--text-secondary)'
-      }}>
-        <p>
-          Built for FiveM developers • 
+      <Separator />
+      <footer className="p-3 sm:p-4 bg-slate-900 text-center text-xs sm:text-sm text-slate-400">
+        <p className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-0">
+          <span>Built with ❤️</span>
+          <span className="hidden sm:inline">•</span>
           <a 
             href="https://docs.fivem.net/docs/game-references/text-formatting/" 
             target="_blank" 
             rel="noopener noreferrer"
-            style={{ color: 'var(--accent-color)', marginLeft: '5px' }}
+            className="text-blue-400 hover:text-blue-300 sm:ml-1"
           >
             View Official Documentation
           </a>
